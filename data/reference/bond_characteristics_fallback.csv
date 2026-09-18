@@ -1,0 +1,10 @@
+fund,as_of,duration,real_duration,ig_spread_share,hy_spread_share,source
+AGG,2026-06-30,5.80,0,0.27,0,iShares factsheet (effective duration); credit share from sector mix
+TIP,2026-06-30,0,6.27,0,0,iShares factsheet (real duration)
+IEF,2026-06-30,6.95,0,0,0,iShares factsheet
+TLT,2026-06-30,15.31,0,0,0,iShares factsheet
+SHY,2026-06-30,1.85,0,0,0,approximation
+SHV,2026-06-30,0.30,0,0,0,approximation
+LQD,2026-06-30,7.92,0,1.0,0,iShares factsheet
+HYG,2026-06-30,2.99,0,0,1.0,iShares factsheet
+EMB,2026-06-30,6.90,0,0,0.8,approximation (EM sovereign spread treated as 0.8x HY spread)

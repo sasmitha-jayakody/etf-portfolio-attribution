@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+# raw market data: rebuild with scripts/fetch_data.py (data/results.db is committed)
+data/etf_lab.db
+data/synthetic.db
+outputs/dashboard_data.json

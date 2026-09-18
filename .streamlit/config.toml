@@ -1,0 +1,96 @@
+# Institutional pitchbook theme: white page, navy furniture, one sans face.
+# Lato is served from static/ so the app looks the same offline, on Streamlit
+# Cloud and on a machine that has never seen the font. It also replaces
+# Streamlit's own default face, which is what made the app look generic.
+
+[server]
+headless = true
+enableStaticServing = true
+
+[theme]
+# The base block is the light ground, which also keeps the app looking right on
+# a Streamlit older than the per-mode theme sections below.
+primaryColor = "#2a5f9e"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f6f9"
+textColor = "#14202e"
+linkColor = "#2a5f9e"
+borderColor = "#dde3ea"
+dataframeBorderColor = "#dde3ea"
+dataframeHeaderBackgroundColor = "#e8eef5"
+codeBackgroundColor = "#f3f6f9"
+chartCategoricalColors = ["#2a5f9e", "#c1571d", "#0f8f6f", "#b8860b",
+                          "#9c5c8f", "#2f7a2f", "#4a3aa7", "#c0392b"]
+chartSequentialColors = ["#eaf0f7", "#d3e0ee", "#b4cbe1", "#8fb1d2", "#6a96c2",
+                         "#4a7cb0", "#33649a", "#22507f", "#163d64", "#102f52"]
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "none"
+buttonRadius = "none"
+baseFontSize = 15
+font = "Lato, Segoe UI, sans-serif"
+headingFont = "Lato, Segoe UI, sans-serif"
+headingFontWeights = [700, 700, 700]
+headingFontSizes = ["1.85rem", "1.15rem", "0.95rem"]
+codeFont = "Consolas, SFMono-Regular, monospace"
+metricValueFontSize = "2.1rem"
+metricValueFontWeight = 700
+
+[theme.sidebar]
+backgroundColor = "#102f52"
+secondaryBackgroundColor = "#173d66"
+textColor = "#dfe8f1"
+borderColor = "#25496f"
+linkColor = "#9dc3ea"
+primaryColor = "#9dc3ea"
+
+# ---------------------------------------------------------------- dark
+# Same structure on a night ground: the page is a deep slate rather than pure
+# black, the portfolio hues are lifted so each one still reads against it, and
+# the sidebar stays a shade darker than the page so the split is still legible.
+[theme.dark]
+primaryColor = "#5b9ae0"
+backgroundColor = "#101c29"
+secondaryBackgroundColor = "#17273a"
+textColor = "#e7edf4"
+linkColor = "#7fb2e4"
+borderColor = "#23364b"
+dataframeBorderColor = "#23364b"
+dataframeHeaderBackgroundColor = "#1b2c3e"
+codeBackgroundColor = "#17273a"
+chartCategoricalColors = ["#5b9ae0", "#e08040", "#1db894", "#d2a521",
+                          "#c084b4", "#52a852", "#8a80e8", "#e0655a"]
+chartSequentialColors = ["#12202f", "#16293b", "#1b3349", "#204058", "#264e69",
+                         "#2d5d7b", "#356d8f", "#3f7fa5", "#4a92bd", "#5b9ae0"]
+
+[theme.dark.sidebar]
+backgroundColor = "#0d1a27"
+secondaryBackgroundColor = "#1b2f45"
+textColor = "#dbe6f2"
+borderColor = "#23364b"
+linkColor = "#7fb2e4"
+primaryColor = "#7fb2e4"
+
+[[theme.fontFaces]]
+family = "Lato"
+url = "app/static/fonts/Lato-Regular.woff2"
+weight = "400"
+style = "normal"
+
+[[theme.fontFaces]]
+family = "Lato"
+url = "app/static/fonts/Lato-Italic.woff2"
+weight = "400"
+style = "italic"
+
+[[theme.fontFaces]]
+family = "Lato"
+url = "app/static/fonts/Lato-Bold.woff2"
+weight = "700"
+style = "normal"
+
+[[theme.fontFaces]]
+family = "Lato"
+url = "app/static/fonts/Lato-Black.woff2"
+weight = "900"
+style = "normal"

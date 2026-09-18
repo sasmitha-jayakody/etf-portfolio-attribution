@@ -1,0 +1,181 @@
+fund,as_of,dimension,bucket,weight,source
+IVV,2026-06-30,sector,Information Technology,0.3796,factsheet 2026-06-30
+IVV,2026-06-30,sector,Financials,0.1174,factsheet 2026-06-30
+IVV,2026-06-30,sector,Communication,0.0967,factsheet 2026-06-30
+IVV,2026-06-30,sector,Consumer Discretionary,0.093,factsheet 2026-06-30
+IVV,2026-06-30,sector,Industrials,0.0892,factsheet 2026-06-30
+IVV,2026-06-30,sector,Health Care,0.0887,factsheet 2026-06-30
+IVV,2026-06-30,sector,Consumer Staples,0.0456,factsheet 2026-06-30
+IVV,2026-06-30,sector,Energy,0.0297,factsheet 2026-06-30
+IVV,2026-06-30,sector,Utilities,0.0219,factsheet 2026-06-30
+IVV,2026-06-30,sector,Real Estate & Other,0.0199,factsheet 2026-06-30
+IVV,2026-06-30,sector,Materials,0.0183,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Information Technology,0.3911,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Financials,0.1093,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Consumer Discretionary,0.0963,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Communication,0.0932,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Health Care,0.0913,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Industrials,0.0874,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Consumer Staples,0.043,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Energy,0.0293,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Utilities,0.0208,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Materials,0.0191,factsheet 2026-06-30
+QUAL,2026-06-30,sector,Real Estate & Other,0.0192,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Information Technology,0.4175,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Financials,0.1094,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Consumer Discretionary,0.0942,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Communication,0.0858,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Industrials,0.0834,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Health Care,0.0768,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Consumer Staples,0.0415,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Energy,0.0279,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Real Estate & Other,0.0439,factsheet 2026-06-30
+VLUE,2026-06-30,sector,Utilities,0.0196,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Financials,0.232877,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Industrials,0.19538,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Information Technology,0.119188,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Health Care,0.09659,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Consumer Discretionary,0.086291,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Materials,0.065693,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Consumer Staples,0.064994,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Communication,0.037496,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Utilities,0.036296,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Energy,0.032997,factsheet 2026-06-30
+IEFA,2026-06-30,sector,Real Estate & Other,0.032197,factsheet 2026-06-30
+EFA,2026-06-30,sector,Financials,0.232877,factsheet 2026-06-30
+EFA,2026-06-30,sector,Industrials,0.19538,factsheet 2026-06-30
+EFA,2026-06-30,sector,Information Technology,0.119188,factsheet 2026-06-30
+EFA,2026-06-30,sector,Health Care,0.09659,factsheet 2026-06-30
+EFA,2026-06-30,sector,Consumer Discretionary,0.086291,factsheet 2026-06-30
+EFA,2026-06-30,sector,Materials,0.065693,factsheet 2026-06-30
+EFA,2026-06-30,sector,Consumer Staples,0.064994,factsheet 2026-06-30
+EFA,2026-06-30,sector,Communication,0.037496,factsheet 2026-06-30
+EFA,2026-06-30,sector,Utilities,0.036296,factsheet 2026-06-30
+EFA,2026-06-30,sector,Energy,0.032997,factsheet 2026-06-30
+EFA,2026-06-30,sector,Real Estate & Other,0.032197,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Information Technology,0.4293,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Financials,0.1736,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Industrials,0.0793,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Consumer Discretionary,0.0751,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Materials,0.059,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Communication,0.0562,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Health Care,0.031,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Energy,0.0292,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Consumer Staples,0.0291,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Utilities,0.0194,factsheet 2026-06-30
+IEMG,2026-06-30,sector,Real Estate & Other,0.0188,factsheet 2026-06-30
+EEM,2026-06-30,sector,Information Technology,0.4293,factsheet 2026-06-30
+EEM,2026-06-30,sector,Financials,0.1736,factsheet 2026-06-30
+EEM,2026-06-30,sector,Industrials,0.0793,factsheet 2026-06-30
+EEM,2026-06-30,sector,Consumer Discretionary,0.0751,factsheet 2026-06-30
+EEM,2026-06-30,sector,Materials,0.059,factsheet 2026-06-30
+EEM,2026-06-30,sector,Communication,0.0562,factsheet 2026-06-30
+EEM,2026-06-30,sector,Health Care,0.031,factsheet 2026-06-30
+EEM,2026-06-30,sector,Energy,0.0292,factsheet 2026-06-30
+EEM,2026-06-30,sector,Consumer Staples,0.0291,factsheet 2026-06-30
+EEM,2026-06-30,sector,Utilities,0.0194,factsheet 2026-06-30
+EEM,2026-06-30,sector,Real Estate & Other,0.0188,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Information Technology,0.3198,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Financials,0.1611,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Industrials,0.1104,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Consumer Discretionary,0.0869,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Health Care,0.0823,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Communication,0.0779,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Consumer Staples,0.0471,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Materials,0.0355,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Energy,0.0352,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Utilities,0.0249,factsheet 2026-06-30
+ACWI,2026-06-30,sector,Real Estate & Other,0.0189,factsheet 2026-06-30
+AGG,2026-06-30,sector,FI: Treasury,0.4626,factsheet 2026-06-30
+AGG,2026-06-30,sector,FI: Securitized (MBS/CMBS),0.2482,factsheet 2026-06-30
+AGG,2026-06-30,sector,FI: IG Corporate,0.2471,factsheet 2026-06-30
+AGG,2026-06-30,sector,FI: Govt-related,0.035,factsheet 2026-06-30
+AGG,2026-06-30,sector,Cash & T-bills,0.0071,factsheet 2026-06-30
+IEF,2026-06-30,sector,FI: Treasury,1.0,factsheet 2026-06-30
+TLT,2026-06-30,sector,FI: Treasury,1.0,factsheet 2026-06-30
+SHY,2026-06-30,sector,FI: Treasury,1.0,factsheet 2026-06-30
+TIP,2026-06-30,sector,FI: TIPS,1.0,factsheet 2026-06-30
+LQD,2026-06-30,sector,FI: IG Corporate,1.0,factsheet 2026-06-30
+HYG,2026-06-30,sector,FI: HY Corporate,1.0,factsheet 2026-06-30
+EMB,2026-06-30,sector,FI: EM Sovereign,1.0,approximation
+IAU,2026-06-30,sector,Gold,1.0,factsheet 2026-06-30
+SHV,2026-06-30,sector,Cash & T-bills,1.0,factsheet 2026-06-30
+IVV,2026-06-30,country,United States,1.0,approximation
+QUAL,2026-06-30,country,United States,1.0,approximation
+VLUE,2026-06-30,country,United States,1.0,approximation
+IEF,2026-06-30,country,United States,1.0,approximation
+TLT,2026-06-30,country,United States,1.0,approximation
+SHY,2026-06-30,country,United States,1.0,approximation
+TIP,2026-06-30,country,United States,1.0,approximation
+SHV,2026-06-30,country,United States,1.0,approximation
+AGG,2026-06-30,country,United States,0.92,approximation
+AGG,2026-06-30,country,Other,0.08,approximation
+LQD,2026-06-30,country,United States,0.84,approximation
+LQD,2026-06-30,country,United Kingdom,0.05,approximation
+LQD,2026-06-30,country,Canada,0.03,approximation
+LQD,2026-06-30,country,Japan,0.02,approximation
+LQD,2026-06-30,country,Other,0.06,approximation
+HYG,2026-06-30,country,United States,0.88,approximation
+HYG,2026-06-30,country,Canada,0.04,approximation
+HYG,2026-06-30,country,Other,0.08,approximation
+EMB,2026-06-30,country,Mexico,0.05,approximation
+EMB,2026-06-30,country,Saudi Arabia,0.05,approximation
+EMB,2026-06-30,country,Turkey,0.04,approximation
+EMB,2026-06-30,country,Indonesia,0.04,approximation
+EMB,2026-06-30,country,Other EM,0.82,approximation
+IEFA,2026-06-30,country,Japan,0.2536,factsheet 2026-06-30
+IEFA,2026-06-30,country,United Kingdom,0.1398,factsheet 2026-06-30
+IEFA,2026-06-30,country,France,0.0902,factsheet 2026-06-30
+IEFA,2026-06-30,country,Switzerland,0.088,factsheet 2026-06-30
+IEFA,2026-06-30,country,Germany,0.0805,factsheet 2026-06-30
+IEFA,2026-06-30,country,Australia,0.07,factsheet 2026-06-30
+IEFA,2026-06-30,country,Netherlands,0.057,factsheet 2026-06-30
+IEFA,2026-06-30,country,Spain,0.0361,factsheet 2026-06-30
+IEFA,2026-06-30,country,Sweden,0.036,factsheet 2026-06-30
+IEFA,2026-06-30,country,Italy,0.0319,factsheet 2026-06-30
+IEFA,2026-06-30,country,Other Developed,0.1169,factsheet 2026-06-30
+EFA,2026-06-30,country,Japan,0.2536,factsheet 2026-06-30
+EFA,2026-06-30,country,United Kingdom,0.1398,factsheet 2026-06-30
+EFA,2026-06-30,country,France,0.0902,factsheet 2026-06-30
+EFA,2026-06-30,country,Switzerland,0.088,factsheet 2026-06-30
+EFA,2026-06-30,country,Germany,0.0805,factsheet 2026-06-30
+EFA,2026-06-30,country,Australia,0.07,factsheet 2026-06-30
+EFA,2026-06-30,country,Netherlands,0.057,factsheet 2026-06-30
+EFA,2026-06-30,country,Spain,0.0361,factsheet 2026-06-30
+EFA,2026-06-30,country,Sweden,0.036,factsheet 2026-06-30
+EFA,2026-06-30,country,Italy,0.0319,factsheet 2026-06-30
+EFA,2026-06-30,country,Other Developed,0.1169,factsheet 2026-06-30
+IEMG,2026-06-30,country,Taiwan,0.274073,factsheet 2026-06-30
+IEMG,2026-06-30,country,South Korea,0.224978,factsheet 2026-06-30
+IEMG,2026-06-30,country,China,0.177082,factsheet 2026-06-30
+IEMG,2026-06-30,country,India,0.122388,factsheet 2026-06-30
+IEMG,2026-06-30,country,Brazil,0.037096,factsheet 2026-06-30
+IEMG,2026-06-30,country,South Africa,0.029797,factsheet 2026-06-30
+IEMG,2026-06-30,country,Saudi Arabia,0.024798,factsheet 2026-06-30
+IEMG,2026-06-30,country,Mexico,0.016398,factsheet 2026-06-30
+IEMG,2026-06-30,country,Malaysia,0.011499,factsheet 2026-06-30
+IEMG,2026-06-30,country,United Arab Emirates,0.011299,factsheet 2026-06-30
+IEMG,2026-06-30,country,Other EM,0.070593,factsheet 2026-06-30
+EEM,2026-06-30,country,Taiwan,0.274073,factsheet 2026-06-30
+EEM,2026-06-30,country,South Korea,0.224978,factsheet 2026-06-30
+EEM,2026-06-30,country,China,0.177082,factsheet 2026-06-30
+EEM,2026-06-30,country,India,0.122388,factsheet 2026-06-30
+EEM,2026-06-30,country,Brazil,0.037096,factsheet 2026-06-30
+EEM,2026-06-30,country,South Africa,0.029797,factsheet 2026-06-30
+EEM,2026-06-30,country,Saudi Arabia,0.024798,factsheet 2026-06-30
+EEM,2026-06-30,country,Mexico,0.016398,factsheet 2026-06-30
+EEM,2026-06-30,country,Malaysia,0.011499,factsheet 2026-06-30
+EEM,2026-06-30,country,United Arab Emirates,0.011299,factsheet 2026-06-30
+EEM,2026-06-30,country,Other EM,0.070593,factsheet 2026-06-30
+ACWI,2026-06-30,country,United States,0.6345,factsheet 2026-06-30
+ACWI,2026-06-30,country,Japan,0.0498,factsheet 2026-06-30
+ACWI,2026-06-30,country,Taiwan,0.033,factsheet 2026-06-30
+ACWI,2026-06-30,country,United Kingdom,0.0303,factsheet 2026-06-30
+ACWI,2026-06-30,country,Canada,0.0293,factsheet 2026-06-30
+ACWI,2026-06-30,country,South Korea,0.0288,factsheet 2026-06-30
+ACWI,2026-06-30,country,China,0.0233,factsheet 2026-06-30
+ACWI,2026-06-30,country,France,0.021,factsheet 2026-06-30
+ACWI,2026-06-30,country,Switzerland,0.0203,factsheet 2026-06-30
+ACWI,2026-06-30,country,Germany,0.0185,factsheet 2026-06-30
+ACWI,2026-06-30,country,Other,0.1112,factsheet 2026-06-30
+IAU,2026-06-30,country,Gold (no country),1.0,n/a

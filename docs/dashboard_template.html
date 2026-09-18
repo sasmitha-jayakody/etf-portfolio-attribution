@@ -1,0 +1,887 @@
+<title>ETF Portfolio Risk Review</title>
+<style>__FONTS__</style>
+<style>
+  :root {
+    color-scheme: light;
+    --ground:#eef2f6; --surface:#ffffff; --surface-2:#f3f6f9;
+    --ink:#14202e; --ink-2:#44556a; --muted:#78889b;
+    --rule:#dde3ea; --rule-strong:#c3ccd6;
+    --navy:#102f52; --navy-2:#1d4674;
+    --accent:#2a5f9e; --pos:#14733f; --neg:#a32b23;
+    --s1:#2a5f9e; --s2:#c1571d; --s3:#0f8f6f; --s0:#737b85;
+    --bar:#dbe4ef;
+    --g1:#2a5f9e; --g2:#c1571d; --g3:#0f8f6f; --g4:#b8860b; --g5:#9c5c8f;
+    --g6:#2f7a2f; --g7:#4a3aa7; --g8:#c0392b; --g9:#737b85;
+    --sans:Lato, "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono:Lato, "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground:#0b1520; --surface:#101c29; --surface-2:#17273a;
+      --ink:#e7edf4; --ink-2:#a9b7c6; --muted:#7e8d9e;
+      --rule:#23364b; --rule-strong:#35495f;
+      --navy:#0d2033; --navy-2:#173553;
+      --accent:#4a86cf; --pos:#3fae6b; --neg:#e0665a;
+      --s1:#5b9ae0; --s2:#e08040; --s3:#1db894; --s0:#8e98a5;
+      --bar:#24384f;
+      --g1:#5b9ae0; --g2:#e08040; --g3:#1db894; --g4:#d2a521; --g5:#c084b4;
+      --g6:#52a852; --g7:#8a80e8; --g8:#e0655a; --g9:#8e98a5;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground:#0b1520; --surface:#101c29; --surface-2:#17273a;
+    --ink:#e7edf4; --ink-2:#a9b7c6; --muted:#7e8d9e;
+    --rule:#23364b; --rule-strong:#35495f;
+    --navy:#0d2033; --navy-2:#173553;
+    --accent:#4a86cf; --pos:#3fae6b; --neg:#e0665a;
+    --s1:#5b9ae0; --s2:#e08040; --s3:#1db894; --s0:#8e98a5;
+    --bar:#24384f;
+    --g1:#5b9ae0; --g2:#e08040; --g3:#1db894; --g4:#d2a521; --g5:#c084b4;
+    --g6:#52a852; --g7:#8a80e8; --g8:#e0655a; --g9:#8e98a5;
+  }
+
+  body { background:var(--ground); color:var(--ink); font-family:var(--sans); line-height:1.5; }
+  .wrap { max-width:1180px; margin:0 auto; padding-inline:22px; padding-block:0 60px; }
+  h1,h2,h3 { text-wrap:balance; margin:0; font-weight:700; letter-spacing:-0.005em; }
+  h1 { font-size:clamp(22px,3vw,30px); }
+  h2 { font-size:13px; font-weight:700; letter-spacing:0.085em; text-transform:uppercase; color:var(--navy); }
+  p { margin:0; max-width:74ch; color:var(--ink-2); }
+  a { color:var(--accent); }
+  .eyebrow { font-size:11px; letter-spacing:0.11em; text-transform:uppercase; color:var(--muted); }
+  .num { font-variant-numeric:tabular-nums; }
+
+  /* masthead: a navy band, like the cover strip of a client deck */
+  header.top { background:var(--navy); color:#fff; }
+  header.top .wrap { display:flex; flex-direction:column; gap:6px; padding-block:22px 20px; }
+  header.top h1 { color:#fff; }
+  header.top .eyebrow { color:#8fabc9; }
+  .subtitle { font-size:14px; color:#c3d6e8; max-width:80ch; }
+  .meta { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:11px; letter-spacing:0.06em;
+          text-transform:uppercase; color:#8fabc9; margin-top:6px; }
+
+  nav.tabs { position:sticky; top:0; z-index:20; background:var(--surface); border-bottom:1px solid var(--rule); }
+  nav.tabs .wrap { display:flex; gap:0; overflow-x:auto; padding-block:0; }
+  nav.tabs button { appearance:none; background:none; border:0; border-bottom:2px solid transparent; cursor:pointer;
+                    font-family:var(--sans); font-size:11.5px; font-weight:700; letter-spacing:0.09em;
+                    text-transform:uppercase; color:var(--ink-2); padding:13px 16px 11px; white-space:nowrap; }
+  nav.tabs button[aria-selected="true"] { color:var(--navy); border-bottom-color:var(--accent); }
+  nav.tabs button:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+
+  section.panel { display:none; padding-top:24px; }
+  section.panel.active { display:block; }
+  .stack { display:flex; flex-direction:column; gap:20px; }
+  .row { display:grid; gap:16px; }
+  @media (min-width:820px) { .row.two { grid-template-columns:1fr 1fr; } .row.three { grid-template-columns:repeat(3,1fr); } }
+
+  /* every block is an exhibit: hairline frame, navy rule on top, no rounding */
+  .card { background:var(--surface); border:1px solid var(--rule); border-top:2px solid var(--navy);
+          padding:13px 16px 10px; }
+  .card > h2 { margin-bottom:3px; }
+  .card .note { font-size:12px; color:var(--muted); margin-top:5px; }
+
+  .strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0;
+           border:1px solid var(--rule); border-top:2px solid var(--navy); background:var(--surface); }
+  .strip > div { padding:13px 16px 15px; display:flex; flex-direction:column; gap:2px;
+                 border-left:1px solid var(--rule); position:relative; overflow:hidden; }
+  .strip .spark { position:absolute; right:0; bottom:0; width:62%; height:52%; opacity:.16; }
+  .strip .name, .strip .big, .strip .sub, .strip .delta { position:relative; z-index:1; }
+  .strip > div:first-child { border-left:0; }
+  .strip .name { display:flex; align-items:center; gap:8px; font-size:10.5px; font-weight:900;
+                 letter-spacing:0.07em; text-transform:uppercase; color:var(--ink-2); }
+  .swatch { width:14px; height:3px; border-radius:0; flex:none; }
+  .strip .big { font-size:52px; font-weight:900; letter-spacing:-0.035em; line-height:1;
+                font-variant-numeric:tabular-nums;
+                margin-top:5px; line-height:1.05; }
+  .strip .delta { font-size:12.5px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .strip .sub { font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .delta.pos { color:var(--pos); } .delta.neg { color:var(--neg); }
+
+  table { border-collapse:collapse; width:100%; font-size:12.5px; }
+  .scroll { overflow-x:auto; }
+  th, td { padding:6px 10px; text-align:right; border-bottom:1px solid var(--rule); white-space:nowrap; }
+  th:first-child, td:first-child { text-align:left; }
+  thead th { font-size:10.5px; text-transform:uppercase; letter-spacing:0.07em; font-weight:700;
+             color:#fff; background:var(--navy); border-bottom:0; }
+  tbody td { font-variant-numeric:tabular-nums; color:var(--ink); }
+  tbody td:first-child { color:var(--ink-2); }
+  tbody tr:nth-child(even) td { background:var(--surface-2); }
+  tbody tr:hover td { background:color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+  td.pos { color:var(--pos); } td.neg { color:var(--neg); }
+  td.left { text-align:left; white-space:normal; color:var(--ink); }
+  footer .disclaimer { margin-top:10px; padding-left:11px; border-left:3px solid var(--accent);
+                       color:var(--ink-2); }
+  .note-block { margin:14px 0 0; padding:12px 15px; border-left:3px solid var(--accent);
+                background:var(--surface-2); font-size:13px; line-height:1.55; color:var(--ink-2); }
+  .note-block b { color:var(--ink); }
+  .note-block ul { margin:0; padding-left:18px; }
+  .note-block li + li { margin-top:7px; }
+  /* the rows that drive the risk story read heavier than the rest */
+  tbody tr.lead td { font-weight:800; color:var(--navy); }
+  tbody tr.lead td:first-child { color:var(--ink); }
+  :root[data-theme="dark"] tbody tr.lead td { color:var(--ink); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) tbody tr.lead td { color:var(--ink); }
+  }
+
+  .chart { width:100%; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px 16px; font-size:11.5px; color:var(--ink-2); margin:4px 0 2px; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+
+  .controls { display:flex; flex-wrap:wrap; gap:14px 22px; align-items:flex-end; }
+  .controls label { display:flex; flex-direction:column; gap:4px; font-size:11px; font-weight:700;
+                    letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-2); min-width:170px; }
+  .controls output { font-variant-numeric:tabular-nums; color:var(--ink); font-size:13px; font-weight:700;
+                     letter-spacing:0; text-transform:none; }
+  input[type=range] { accent-color:var(--accent); width:100%; }
+  .seg { display:inline-flex; border:1px solid var(--rule-strong); overflow:hidden; }
+  .seg button { appearance:none; border:0; background:var(--surface); color:var(--ink-2); font-family:var(--sans);
+                font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+                padding:7px 13px; cursor:pointer; }
+  .seg button[aria-pressed="true"] { background:var(--navy); color:#fff; }
+  .prose { display:flex; flex-direction:column; gap:11px; font-size:13.5px; }
+  .prose h3 { font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em;
+              color:var(--navy); margin-top:6px; }
+  /* ---- motion: one entrance per view, replayed when a tab is opened ---- */
+  @keyframes chartDraw { to { stroke-dashoffset:0; } }
+  @keyframes chartGrowX { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+  @keyframes chartGrowY { from { transform:scaleY(0); } to { transform:scaleY(1); } }
+  @keyframes riseIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  section.panel.active > .strip > div { animation:riseIn .5s cubic-bezier(.2,.8,.2,1) both; }
+  section.panel.active > .strip > div:nth-child(2) { animation-delay:.07s; }
+  section.panel.active > .strip > div:nth-child(3) { animation-delay:.14s; }
+  section.panel.active > .strip > div:nth-child(4) { animation-delay:.21s; }
+  .card, .strip > div, tbody tr { transition:background .15s ease, border-color .15s ease; }
+  .card:hover { border-color:var(--rule-strong); }
+  @media (prefers-reduced-motion: reduce) {
+    section.panel.active > .strip > div { animation:none; }
+  }
+
+  footer { margin-top:30px; padding-top:12px; border-top:1px solid var(--rule); font-size:11.5px; color:var(--muted); }
+  .warn { background:#fdf3d7; color:#5c4400; border:1px solid #e2c877; padding:10px 14px; font-size:13px; }
+
+  /* the navy furniture flips to the light accent in either dark state */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) h2,
+    :root:not([data-theme="light"]) .prose h3,
+    :root:not([data-theme="light"]) nav.tabs button[aria-selected="true"] { color:var(--ink); }
+    :root:not([data-theme="light"]) .card,
+    :root:not([data-theme="light"]) .strip { border-top-color:var(--accent); }
+    :root:not([data-theme="light"]) .seg button[aria-pressed="true"] { background:var(--accent); }
+    :root:not([data-theme="light"]) thead th { background:var(--surface-2); color:var(--ink); }
+  }
+  :root[data-theme="dark"] h2,
+  :root[data-theme="dark"] .prose h3,
+  :root[data-theme="dark"] nav.tabs button[aria-selected="true"] { color:var(--ink); }
+  :root[data-theme="dark"] .card,
+  :root[data-theme="dark"] .strip { border-top-color:var(--accent); }
+  :root[data-theme="dark"] .seg button[aria-pressed="true"] { background:var(--accent); }
+  :root[data-theme="dark"] thead th { background:var(--surface-2); color:var(--ink); }
+</style>
+
+<script>__CHARTS__</script>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Multi-asset ETF portfolios · <span id="window-label"></span></div>
+    <h1>ETF Portfolio Construction &amp; Risk Attribution</h1>
+    <p class="subtitle">Three portfolios built from iShares ETFs against a 60/40 benchmark, with the
+      allocation, factor and cost decisions that drove the difference.</p>
+    <div class="meta" id="meta"></div>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <div class="wrap" id="tabs"></div>
+</nav>
+
+<main class="wrap" id="panels"></main>
+
+<script type="application/json" id="payload">__DATA__</script>
+<script>
+(function () {
+  const D = JSON.parse(document.getElementById("payload").textContent);
+  const META = D.meta;
+  const ORDER = ["SAA", "MINVAR", "QV", "BENCH"];
+  const NAMES = {SAA:"Strategic 60/40", MINVAR:"Minimum Variance", QV:"Quality-Value", BENCH:"Benchmark 60/40"};
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const cvar = {SAA:"--s1", MINVAR:"--s2", QV:"--s3", BENCH:"--s0"};
+  const C = c => css(cvar[c]);
+  const SEGS = ["US Equity","Dev ex-US Equity","EM Equity","US Aggregate","TIPS","Treasuries","Credit","Gold","Cash","Global Equity"];
+  const SEGVAR = ["--g1","--g2","--g3","--g4","--g5","--g6","--g7","--g8","--g9","--g9"];
+  const segColor = s => css(SEGVAR[Math.max(0, SEGS.indexOf(s))]);
+  const pct = (v, d=1) => v === null || v === undefined || Number.isNaN(v) ? "n/a" : (100*v).toFixed(d) + "%";
+  const sgn = (v, d=1) => (v >= 0 ? "+" : "") + (100*v).toFixed(d) + "pp";
+  const num = (v, d=2) => v === null || v === undefined || Number.isNaN(v) ? "n/a" : v.toFixed(d);
+  const by = (rows, k, v) => rows.filter(r => r[k] === v);
+  const el = (tag, attrs = {}, kids = []) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else n.setAttribute(k, v);
+    }
+    (Array.isArray(kids) ? kids : [kids]).forEach(k => k && n.appendChild(k));
+    return n;
+  };
+  const S = Object.fromEntries(D.summary.map(r => [r.code, r]));
+  const YEARS = (new Date(META.backtest_end) - new Date(META.backtest_start)) / 31557600000;
+  /* Thirteen years is a short sample; the t beside an information ratio is the
+     honest way to say how much of the active return could be luck. */
+  const tOfIR = ir => (ir === null || ir === undefined || isNaN(ir)) ? NaN : ir * Math.sqrt(YEARS);
+  const pp = (v, d = 2) => ((Math.abs(v * 100) < 0.5 * Math.pow(10, -d) ? 0 : v * 100).toFixed(d)
+                            .replace(/^(?!-)/, "+")) + "pp";
+  /* A quiet block of prose that says what a number does and does not mean. */
+  function note(html) {
+    const n = el("div", {class:"note-block"});
+    n.innerHTML = html;
+    return n;
+  }
+
+  /* a tiny area chart drawn behind each headline number */
+  function spark(values, colorVar) {
+    const v = values.filter(x => x !== null && isFinite(x));
+    if (v.length < 3) return null;
+    const step = Math.max(1, Math.floor(v.length / 90));
+    const pts = v.filter((_, i) => i % step === 0);
+    const lo = Math.min(...pts), hi = Math.max(...pts), rng = (hi - lo) || 1;
+    const W = 150, H = 40;
+    const xy = pts.map((y, i) => [i * W / (pts.length - 1), H - (y - lo) / rng * (H - 3) - 1.5]);
+    const line = xy.map(([x, y]) => x.toFixed(1) + "," + y.toFixed(1)).join(" ");
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    g.setAttribute("class", "spark");
+    g.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    g.setAttribute("preserveAspectRatio", "none");
+    g.setAttribute("aria-hidden", "true");
+    const fill = document.createElementNS(g.namespaceURI, "polygon");
+    fill.setAttribute("points", `0,${H} ${line} ${W},${H}`);
+    fill.setAttribute("fill", css(colorVar));
+    const stroke = document.createElementNS(g.namespaceURI, "polyline");
+    stroke.setAttribute("points", line);
+    stroke.setAttribute("fill", "none");
+    stroke.setAttribute("stroke", css(colorVar));
+    stroke.setAttribute("stroke-width", "1.6");
+    g.appendChild(fill); g.appendChild(stroke);
+    return g;
+  }
+
+  // ---------------------------------------------------------------- chart helpers
+  const fPct = (d0 = 0) => (v, d) => (100 * v).toFixed(d === undefined ? d0 : d) + "%";
+  const fSgn = (d0 = 1) => (v, d) => (v >= 0 ? "+" : "") + (100 * v).toFixed(d === undefined ? d0 : d) + "%";
+  const fNum = (d0 = 2, suffix = "") => (v, d) => v.toFixed(d === undefined ? d0 : d) + suffix;
+  const fDollar = (v, d) => "$" + v.toFixed(d === undefined ? 0 : d);
+
+  function table(headers, rows, opts = {}) {
+    const t = el("table");
+    const thead = el("thead");
+    thead.appendChild(el("tr", {}, headers.map(h => el("th", {text:h}))));
+    t.appendChild(thead);
+    const tb = el("tbody");
+    rows.forEach(r => {
+      const tr = el("tr");
+      if (r.lead) tr.className = "lead";
+      (r.cells || r).forEach((c, i) => {
+        const cell = el("td", {text: typeof c === "object" ? c.t : c});
+        if (typeof c === "object" && c.cls) cell.className = c.cls;
+        if (typeof c === "object" && c.bar) {     /* bar-in-cell: size without reading the digits */
+          const pctw = Math.max(0, Math.min(100, c.bar * 100)).toFixed(1);
+          cell.style.backgroundImage =
+            `linear-gradient(to right, ${c.barColor || "var(--bar)"} ${pctw}%, transparent ${pctw}%)`;
+          cell.style.backgroundRepeat = "no-repeat";
+        }
+        if (typeof c === "object" && c.mark) cell.style.borderBottom = "2px solid " + c.mark;
+        tr.appendChild(cell);
+      });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    return el("div", {class:"scroll"}, t);
+  }
+  const cssVar = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const fadeHex = (hex, a) => {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+    if (!m) return hex;
+    const n = parseInt(m[1], 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  };
+  /* A row that carries the risk story: bold, with a bar behind each reading and the
+     largest of the four underlined in that portfolio's colour. */
+  function leadRow(label, values, fmt) {
+    const hi = Math.max(...values.map(Math.abs));
+    const top = values.indexOf(Math.max(...values));
+    const cells = [label].concat(values.map((v, i) => ({
+      t: fmt(v), bar: Math.abs(v) / (hi || 1), barColor: "var(--bar)",
+      mark: i === top ? cssVar(cvar[ORDER[i]]) : null,
+    })));
+    cells.lead = true;
+    return cells;
+  }
+  function card(title, note, kids) {
+    const c = el("div", {class:"card"});
+    if (title) c.appendChild(el("h2", {text:title}));
+    if (note) c.appendChild(el("p", {class:"note", text:note}));
+    (Array.isArray(kids) ? kids : [kids]).forEach(k => k && c.appendChild(k));
+    return c;
+  }
+  function legend(items) {
+    return el("div", {class:"legend"}, items.map(([label, color]) =>
+      el("span", {}, [el("i", {class:"swatch", style:`background:${color}`}), el("span", {text:label})])));
+  }
+
+  // ---------------------------------------------------------------- header meta
+  document.getElementById("window-label").textContent = META.backtest_start + " to " + META.backtest_end;
+  const metaBits = [
+    "Data: " + META.data, "Prices to " + META.prices_end,
+    "Daily · USD · total return", "Costs charged on every trade",
+  ];
+  document.getElementById("meta").append(...metaBits.map(t => el("span", {text:t})));
+
+  // ---------------------------------------------------------------- panels
+  const PANELS = [];
+  function panel(id, label, build) { PANELS.push({id, label, build}); }
+
+  panel("result", "Result", root => {
+    const strip = el("div", {class:"strip"});
+    ORDER.forEach(c => {
+      const r = S[c];
+      const cell = el("div", {}, [
+        el("div", {class:"name"}, [el("i", {class:"swatch", style:`background:${C(c)}`}), el("span", {text:NAMES[c]})]),
+        el("div", {class:"big", style:`color:${C(c)}`, text:pct(r.cagr, 1)}),
+        el("div", {class: c === "BENCH" ? "sub" : "delta " + (r.excess_cagr >= 0 ? "pos" : "neg"),
+                   text: c === "BENCH" ? "benchmark" :
+                         (r.excess_cagr >= 0 ? "\u25b2 " : "\u25bc ") +
+                         Math.abs(r.excess_cagr * 100).toFixed(2) + "pp vs benchmark"}),
+        el("div", {class:"sub", text:`vol ${pct(r.vol,1)} · Sharpe ${num(r.sharpe)} · max DD ${pct(r.max_dd,1)}`}),
+        el("div", {class:"sub", text: c === "BENCH" ? "" :
+                   `info ratio ${num(r.info_ratio)} · t ${num(tOfIR(r.info_ratio), 1)}`}),
+      ]);
+      const sp = spark(D.nav[c].nav, cvar[c]);
+      if (sp) cell.insertBefore(sp, cell.firstChild);
+      strip.appendChild(cell);
+    });
+    root.appendChild(strip);
+    root.appendChild(note(
+      "<b>How big are these differences, really.</b> The strategic portfolio earns " +
+      pct(S.SAA.excess_cagr, 2) + " a year over the benchmark at " + pct(S.SAA.tracking_error, 2) +
+      " tracking error, an information ratio of " + num(S.SAA.info_ratio) + ". Over " + YEARS.toFixed(1) +
+      " years that is a t of about " + num(tOfIR(S.SAA.info_ratio), 1) + ", so it clears the bar for being " +
+      "real, but only just. Quality-Value earns " + pct(S.QV.excess_cagr, 2) + " a year at an information " +
+      "ratio of " + num(S.QV.info_ratio) + ", a t of about " + num(tOfIR(S.QV.info_ratio), 1) + ": that is " +
+      "indistinguishable from zero and should be read as noise, not as a factor premium being captured. " +
+      "Minimum variance is " + pct(Math.abs(S.MINVAR.excess_cagr), 2) + " a year behind (t " +
+      num(tOfIR(S.MINVAR.info_ratio), 1) + "). The attribution tab shows where each of these came from, " +
+      "and almost none of it is fund selection."));
+
+    const navCard = card("Growth of $100, net of transaction costs", null, []);
+    const navNode = el("div", {class:"chart"});
+    navCard.appendChild(navNode);
+    navCard.appendChild(legend(ORDER.map(c => [NAMES[c], C(c)])));
+    root.appendChild(navCard);
+    new Charts.LineChart(navNode, {height:330, fmt:fDollar, label:"Growth of $100 by portfolio",
+      animate:"line",
+      series: ORDER.map(c => ({name:NAMES[c], color:cvar[c], x:D.nav[c].dates, y:D.nav[c].nav.map(v => 100*v)}))});
+
+    const ddCard = card("Drawdown from the previous peak", null, []);
+    const ddNode = el("div", {class:"chart"});
+    ddCard.appendChild(ddNode);
+    root.appendChild(ddCard);
+    new Charts.LineChart(ddNode, {height:240, fmt:fPct(0), zero:true, label:"Drawdown by portfolio",
+      series: ORDER.map(c => ({name:NAMES[c], color:cvar[c], x:D.nav[c].dates, y:D.nav[c].dd, width:1.5}))});
+
+    const rows = [
+      ["Annualised return", r => pct(r.cagr,2)], ["Volatility", r => pct(r.vol,2)],
+      ["Sharpe ratio", r => num(r.sharpe)], ["Sortino ratio", r => num(r.sortino)],
+      ["Maximum drawdown", r => pct(r.max_dd,1)], ["Drawdown trough", r => r.dd_trough],
+      ["Recovered by", r => r.dd_recovery || "not yet"],
+      ["Tracking error", r => pct(r.tracking_error,2)], ["Information ratio", r => num(r.info_ratio)],
+      ["Beta to benchmark", r => num(r.beta)], ["Down-capture", r => pct(r.down_capture,0)],
+      ["Daily VaR 95%", r => pct(r.var95_daily,2)], ["Worst month", r => pct(r.worst_month,1)],
+      ["Turnover p.a. (one-way)", r => pct(r.turnover_ann,1)],
+      ["Trading cost p.a.", r => (r.cost_bps_ann || 0).toFixed(1) + " bp"],
+      ["Rebalancing rule", r => r.rule],
+    ].map(([label, f]) => [label, ...ORDER.map(c => f(S[c]))]);
+    root.appendChild(card("Key statistics", null, table(["", ...ORDER.map(c => NAMES[c])], rows)));
+
+    const years = [...new Set(D.calendar.map(r => r.year))].sort();
+    root.appendChild(card("Calendar-year returns", null, table(
+      ["Year", ...ORDER.map(c => NAMES[c])],
+      years.map(y => [String(y), ...ORDER.map(c => {
+        const v = D.calendar.find(r => r.year === y && r.code === c);
+        return v ? {t: pct(v.return,1), cls: v.return >= 0 ? "pos" : "neg"} : "n/a";
+      })]))));
+
+    const periods = [...new Set(D.periods.map(r => r.period))];
+    root.appendChild(card("Return by regime (annualised)", null, table(
+      ["Regime", ...ORDER.map(c => NAMES[c])],
+      periods.map(p => [p, ...ORDER.map(c => {
+        const v = D.periods.find(r => r.period === p && r.code === c);
+        return v ? {t: pct(v.cagr,1), cls: v.cagr >= 0 ? "pos" : "neg"} : "n/a";
+      })]))));
+    root.appendChild(note(
+      "<b>What this does not prove.</b><ul>" +
+      "<li><b>One rates shock, and the crisis is borrowed.</b> The window starts in August 2013 because that " +
+      "is when QUAL listed, so it contains a single genuine rates and inflation shock, 2022. The 2008 crisis " +
+      "sits outside it and appears only as a stress replay built from proxy funds, which is an estimate rather " +
+      "than something these portfolios lived through.</li>" +
+      "<li><b>The factor sleeve was chosen with hindsight.</b> QUAL and VLUE are in here because quality and " +
+      "value are the factors people talk about today. A fair test would have had to pick them in 2013, and " +
+      "accept whatever the next thirteen years did to them.</li>" +
+      "<li><b>The allocation stance was never re-decided.</b> Most of the strategic portfolio's active return " +
+      "comes from a fixed asset allocation that was set once and rebalanced back to, not from a repeated " +
+      "judgement that could be scored. It was right on this one path, and one path is not evidence of a " +
+      "process.</li></ul>"));
+  });
+
+  const CORR_TRIGGER = 0.30;
+
+  panel("risk", "Risk", root => {
+    const roll = D.rolling || {};
+    if (roll.vol_63d) {
+      const vNode = el("div", {class:"chart"});
+      const vCard = card("Rolling 3-month volatility, annualised", null, vNode);
+      vCard.appendChild(legend(ORDER.map(c => [NAMES[c], C(c)])));
+      root.appendChild(vCard);
+      new Charts.LineChart(vNode, {height:280, fmt:fPct(0), label:"Rolling volatility by portfolio",
+        series: ORDER.filter(c => roll.vol_63d[c]).map(c => ({name:NAMES[c], color:cvar[c],
+          x:roll.vol_63d[c].dates, y:roll.vol_63d[c].value, width:1.5})),
+        notes:[{from:"2020-02-15", to:"2020-06-30", text:"COVID crash, Mar 2020"}]});
+      const tNode = el("div", {class:"chart"});
+      root.appendChild(card("Rolling 1-year tracking error versus the benchmark",
+        "How far each portfolio can wander from the 60/40 policy in any twelve months.", tNode));
+      new Charts.LineChart(tNode, {height:250, fmt:fPct(1), label:"Rolling tracking error",
+        series: ["SAA","MINVAR","QV"].filter(c => roll.te_252d[c]).map(c => ({name:NAMES[c], color:cvar[c],
+          x:roll.te_252d[c].dates, y:roll.te_252d[c].value, width:1.5})),
+        notes:[{from:"2020-03-01", to:"2021-03-31", text:"COVID crash carried for a year"}]});
+    }
+    const rcCard = card("Capital versus risk",
+      "Ex-ante volatility split by Euler decomposition on a Ledoit-Wolf covariance of the last 12 months, at today's weights. " +
+      "A 60/40 portfolio is not 60/40 in risk.", []);
+    const rcNode = el("div", {class:"chart"});
+    rcCard.appendChild(rcNode);
+    const segsUsed = [...new Set(D.risk_contrib.map(r => r.segment))].sort((a,b) => SEGS.indexOf(a) - SEGS.indexOf(b));
+    rcCard.appendChild(legend(segsUsed.map(s => [s, segColor(s)])));
+    root.appendChild(rcCard);
+    const labels = [];
+    ORDER.forEach(c => { labels.push(NAMES[c] + " · capital"); labels.push(NAMES[c] + " · risk"); });
+    new Charts.BarsH(rcNode, {height:60 + 34 * labels.length, mode:"stack", fmt:fPct(0), categories:labels,
+      labelWidth:175, animate:"barsL", label:"Share of capital and share of volatility by asset class",
+      series: segsUsed.map(s => ({name:s, color:SEGVAR[Math.max(0, SEGS.indexOf(s))],
+        x: ORDER.flatMap(c => {
+          const r = D.risk_contrib.find(x => x.code === c && x.segment === s);
+          return [r ? r.weight : 0, r ? r.pct_risk : 0];
+        })}))});
+
+    const sbCard = card("Stock-bond correlation (IVV vs AGG, rolling 6 months)",
+      "Below zero, bonds cushion equity drawdowns. Above zero, the 60/40 diversification argument stops working, which is exactly what 2022 looked like.", []);
+    const sbNode = el("div", {class:"chart"});
+    sbCard.appendChild(sbNode);
+    root.appendChild(sbCard);
+    new Charts.LineChart(sbNode, {height:250, fmt:fNum(2), zero:true, label:"Rolling stock-bond correlation",
+      hlines:[{value:CORR_TRIGGER, text:"trigger +0.3"}],
+      series: [{name:"IVV vs AGG", color:"--accent", x:D.stock_bond_corr.dates, y:D.stock_bond_corr.value}]});
+    const corrNow = [...D.stock_bond_corr.value].reverse().find(v => v !== null);
+    sbCard.appendChild(note("It reads " + num(corrNow) + " today, above the +0.3 line, so on this measure the " +
+      "60/40 is not currently diversified the way the policy assumes."));
+
+    const du = Object.fromEntries(D.duration.map(r => [r.code, r]));
+    root.appendChild(card("What would change the portfolio",
+      "Fixed levels, set in advance, so the decision is not made in the middle of a drawdown.",
+      table(["Monitor", "Today", "Trigger", "What I would do"], [
+        ["Tracking error vs policy, 1y rolling (Strategic)", pct(S.SAA.tracking_error, 2), "above 2.0%",
+         {t:"Drift is no longer the 2.5pp band at work. Rebalance to policy or re-underwrite the tilt.", cls:"left"}],
+        ["One-way turnover a year (Strategic)", pct(S.SAA.turnover_ann, 1), "above 15%",
+         {t:"The band is too tight for the volatility regime. Widen it or move to a calendar rule.", cls:"left"}],
+        ["Stock-bond correlation, 6 months", num(corrNow), "above +0.3 for two quarters",
+         {t:"Bonds are no longer the equity hedge. Shift part of the defence to TIPS, gold or cash.", cls:"left"}],
+        ["Bond sleeve DV01 per $1m (Strategic)", "$" + Math.round(du.SAA.dv01_per_1m).toLocaleString(),
+         "above $300",
+         {t:"Duration is doing more than intended. Shorten the sleeve or cut the weight.", cls:"left"}],
+        ["Quality-Value information ratio since inception",
+         num(S.QV.info_ratio) + " (t " + num(tOfIR(S.QV.info_ratio), 1) + ")", "still under 0.30 at twenty years",
+         {t:"The factor sleeve has not paid for its tracking error. Fold it back into the core.", cls:"left"}],
+        ["Minimum variance turnover a year", pct(S.MINVAR.turnover_ann, 1), "above 50%",
+         {t:"The optimiser is chasing the covariance estimate. Add a turnover penalty inside it.", cls:"left"}],
+      ])));
+  });
+
+  panel("exposure", "Exposure", root => {
+    const state = {code:"SAA", dim:"sector"};
+    const controls = el("div", {class:"controls"});
+    const mk = (opts, key, render) => {
+      const seg = el("div", {class:"seg"});
+      opts.forEach(([val, label]) => {
+        const b = el("button", {type:"button", text:label});
+        b.setAttribute("aria-pressed", String(state[key] === val));
+        b.onclick = () => { state[key] = val; [...seg.children].forEach(x => x.setAttribute("aria-pressed", "false"));
+                            b.setAttribute("aria-pressed", "true"); render(); };
+        seg.appendChild(b);
+      });
+      return seg;
+    };
+    const host = el("div", {class:"stack"});
+    const render = () => {
+      host.textContent = "";
+      const rows = D.exposures.filter(r => r.dimension === state.dim);
+      const p = new Map(by(rows, "code", state.code).map(r => [r.bucket, r.weight]));
+      const b = new Map(by(rows, "code", "BENCH").map(r => [r.bucket, r.weight]));
+      const buckets = [...new Set([...p.keys(), ...b.keys()])]
+        .sort((x, y) => (p.get(y) || 0) - (p.get(x) || 0)).slice(0, 16);
+      const node = el("div", {class:"chart"});
+      const c = card(`${NAMES[state.code]}: ${state.dim} exposure, look-through to the underlying holdings`,
+        "Portfolio versus benchmark, as a share of the whole portfolio.", node);
+      c.appendChild(legend([[NAMES[state.code], C(state.code)], ["Benchmark 60/40", C("BENCH")]]));
+      host.appendChild(c);
+      new Charts.BarsH(node, {height: Math.max(240, 40 + 32 * buckets.length), mode:"group", fmt:fPct(0),
+        categories:buckets, labelWidth:160, animate:"barsL", label:"Portfolio versus benchmark exposure",
+        series: [
+          {name:NAMES[state.code], color:cvar[state.code], x:buckets.map(k => p.get(k) || 0)},
+          {name:"Benchmark 60/40", color:cvar.BENCH, x:buckets.map(k => b.get(k) || 0)},
+        ]});
+      host.appendChild(card("Active weight versus benchmark", null, table(
+        ["Bucket", NAMES[state.code], "Benchmark", "Active"],
+        buckets.map(k => {
+          const a = (p.get(k) || 0) - (b.get(k) || 0);
+          return [k, pct(p.get(k) || 0), pct(b.get(k) || 0), {t: sgn(a, 1), cls: a >= 0 ? "pos" : "neg"}];
+        }))));
+    };
+    controls.appendChild(mk(ORDER.map(c => [c, NAMES[c]]), "code", render));
+    controls.appendChild(mk([["sector","Sector"],["country","Country"],["currency","Currency"],["segment","Asset class"]], "dim", render));
+    root.appendChild(el("div", {class:"card"}, controls));
+    root.appendChild(host);
+    render();
+
+    const th = (D.top_holdings || []).filter(r => r.code === state.code);
+    if (th.length) {
+      root.appendChild(card("Largest single issuers, looked through to the underlying holdings",
+        "Fund weight times the issuer's weight inside that fund. This is the concentration a client actually owns.",
+        table(["Issuer", "Ticker", "% of portfolio", "Held through"],
+          th.map(r => [r.name, r.ticker || "",
+                       {t: pct(r.weight, 2), bar: r.weight / Math.max(...th.map(x => x.weight)),
+                        barColor: fadeHex(cssVar(cvar[state.code]), 0.20)},
+                       r.via]))));
+    }
+
+    const du = Object.fromEntries(D.duration.map(r => [r.code, r]));
+    root.appendChild(card("Interest-rate and credit exposure",
+      "Duration contribution is the portfolio-level figure: bond weight × fund duration. DV01 is the dollar move per basis point on a $1m portfolio.",
+      table(["", ...ORDER.map(c => NAMES[c])], [
+        leadRow("Bond weight", ORDER.map(c => du[c].bond_weight), v => pct(v)),
+        ["Nominal duration (yrs)", ...ORDER.map(c => num(du[c].nominal_duration))],
+        ["Real duration via TIPS (yrs)", ...ORDER.map(c => num(du[c].real_duration))],
+        ["Bond sleeve duration (yrs)", ...ORDER.map(c => num(du[c].bond_sleeve_duration))],
+        ["IG spread duration", ...ORDER.map(c => num(du[c].ig_spread_duration))],
+        ["HY / EM spread duration", ...ORDER.map(c => num(du[c].hy_spread_duration))],
+        leadRow("DV01 per $1m", ORDER.map(c => du[c].dv01_per_1m),
+                v => "$" + Math.round(v).toLocaleString()),
+      ])));
+    root.appendChild(note("<b>Why minimum variance sits in bonds.</b> It is specified as long-only variance " +
+      "minimisation over eleven ETFs with a 25% cap on any one fund and a 20% floor on equities, and no return " +
+      "target at all. An optimiser given those constraints walks into the lowest volatility assets and stays " +
+      "there, so " + pct(du.MINVAR.bond_weight, 1) + " in bonds and a DV01 of $" +
+      Math.round(du.MINVAR.dv01_per_1m).toLocaleString() + " per $1m, about double the other three, is the " +
+      "specification doing what it was told rather than a surprise in the data. It is also why the portfolio " +
+      "lost to a 60/40 in a thirteen-year equity bull market, and why its tracking error is " +
+      pct(S.MINVAR.tracking_error, 1) + ". What I would change: a return or equity-risk floor instead of a bare " +
+      "weight floor, a direct cap on portfolio duration, and a turnover penalty inside the optimisation rather " +
+      "than skipping small trades after the fact."));
+  });
+
+  panel("attribution", "Attribution", root => {
+    const full = Object.fromEntries(by(D.brinson_totals, "period", "Full period").map(r => [r.code, r]));
+    const codes = ["SAA", "MINVAR", "QV"];
+    const wf = el("div", {class:"row three"});
+    codes.forEach(c => {
+      const node = el("div", {class:"chart"});
+      wf.appendChild(card(NAMES[c] + ": " + sgn(full[c].active, 1) + " cumulative", null, node));
+      const parts = [["Allocation", full[c].allocation], ["Selection", full[c].selection],
+                     ["Costs", full[c].costs], ["Residual", full[c].bench_residual]];
+      new Charts.BarsV(node, {height:300, waterfall:true, tall:true, fmt:fSgn(1), animate:"barsUp",
+        label:NAMES[c] + " active return decomposition", valueLabels:true,
+        // one colour per portfolio everywhere: a solid bar adds, a hollow bar subtracts
+        items: parts.map(([label, value]) => ({label, value, color: cvar[c], hollow: value < 0}))
+               .concat([{label:"Active", value:full[c].active, color:cvar[c], total:true, outline:true}])});
+    });
+    const segsAll = D.brinson_segments;
+    const sa = Object.fromEntries(segsAll.filter(r => r.code === "SAA").map(r => [r.segment, r]));
+    const segAlloc = (name) => (sa[name] ? sa[name].allocation : 0);
+    const eqAlloc = segAlloc("US Equity") + segAlloc("Dev ex-US Equity") + segAlloc("EM Equity");
+
+    root.appendChild(card("Active return versus the benchmark, decomposed",
+      "Brinson-Fachler, computed daily and linked with Carino. Allocation is what the segment weights did; selection is what the chosen ETFs did inside each segment; " +
+      "the benchmark residual is ACWI/AGG versus the IVV/IEFA/IEMG/AGG composite used for segment returns.", wf));
+
+    root.appendChild(note("<b>Where the strategic portfolio's edge actually came from.</b> Of the " +
+      pp(full.SAA.active, 1) + " cumulative, " + pp(full.SAA.allocation, 1) + " is asset allocation and " +
+      pp(full.SAA.bench_residual, 1) + " is a benchmark construction residual, which is ACWI and AGG measured " +
+      "against the IVV/IEFA/IEMG/AGG composite rather than any decision I made. Selection is " +
+      pp(full.SAA.selection) + " and costs are " + pp(full.SAA.costs) + ". Nothing came from picking better " +
+      "funds. Inside allocation the two largest lines are the lighter US aggregate bond sleeve, " +
+      pp(segAlloc("US Aggregate"), 1) + ", against the cost of the TIPS sleeve the benchmark does not hold, " +
+      pp(segAlloc("TIPS"), 1) + ", with the regional equity tilts adding " + pp(eqAlloc, 1) + " between them. " +
+      "That is one asset allocation stance, fixed in advance and held for thirteen years, in a sample where " +
+      "equities beat bonds by a wide margin. It was right; that is not the same as being skilful. " +
+      "Quality-Value tells the same story from the other side: allocation " + pp(full.QV.allocation, 1) +
+      " with selection " + pp(full.QV.selection, 1) + ", so the quality and value sleeve lost to plain IVV " +
+      "over this window and the portfolio's small lead is inherited from the same allocation stance."));
+
+    // Which allocation call produced the allocation effect, as its own bar.
+    const allocState = {code:"SAA"};
+    const allocNode = el("div", {class:"chart"});
+    const allocCard = card("Which allocation calls produced the allocation effect",
+      "Brinson-Fachler allocation by segment, cumulative over the full period.", allocNode);
+    const allocCtl = el("div", {class:"seg"});
+    ["SAA", "MINVAR", "QV"].forEach(c => {
+      const b = el("button", {type:"button", text:NAMES[c]});
+      b.setAttribute("aria-pressed", String(c === allocState.code));
+      b.addEventListener("click", () => {
+        allocState.code = c;
+        [...allocCtl.children].forEach(x => x.setAttribute("aria-pressed", String(x.textContent === NAMES[c])));
+        drawAlloc();
+      });
+      allocCtl.appendChild(b);
+    });
+    allocCard.insertBefore(allocCtl, allocNode);
+    root.appendChild(allocCard);
+    function drawAlloc() {
+      allocNode.textContent = "";
+      const rows = segsAll.filter(r => r.code === allocState.code)
+                          .filter(r => Math.abs(r.port_weight) > 1e-9 || Math.abs(r.bench_weight) > 1e-9)
+                          .sort((a, b) => a.allocation - b.allocation);
+      new Charts.BarsH(allocNode, {height: 60 + 40 * rows.length, mode:"group", fmt:fSgn(0),
+        categories: rows.map(r => r.segment), labelWidth:150, animate:"barsL", labelEnds:true,
+        label:"Allocation effect by segment",
+        series:[{name:"Allocation effect", color:cvar[allocState.code], x:rows.map(r => r.allocation)}]});
+    }
+    drawAlloc();
+
+    const segs = D.brinson_segments;
+    const segNames = [...new Set(segs.map(r => r.segment))];
+    root.appendChild(card("Effects by segment (cumulative, full period)", null, table(
+      ["Segment", ...codes.flatMap(c => [NAMES[c] + " alloc.", NAMES[c] + " selec."])],
+      segNames.map(s => [s, ...codes.flatMap(c => {
+        const r = segs.find(x => x.code === c && x.segment === s);
+        if (!r) return ["n/a", "n/a"];
+        const sel = r.selection + r.interaction;
+        return [{t: sgn(r.allocation, 2), cls: r.allocation >= 0 ? "pos" : "neg"},
+                {t: sgn(sel, 2), cls: sel >= 0 ? "pos" : "neg"}];
+      })]))));
+
+    const fstate = {code:"QV", mode:"active"};
+    const fhost = el("div", {class:"stack"});
+    const frender = () => {
+      fhost.textContent = "";
+      const rows = D.factor.filter(r => r.code === fstate.code && r.mode === fstate.mode);
+      const meta = D.factor_meta.find(r => r.code === fstate.code && r.mode === fstate.mode);
+      const bar = rows.filter(r => r.factor !== "Alpha / residual");
+      const node = el("div", {class:"chart"});
+      fhost.appendChild(card(`Factor betas · R² ${num(meta.r2)} · ${fstate.mode === "active" ? "active return vs benchmark" : "excess return over cash"}`,
+        null, node));
+      new Charts.BarsV(node, {height:290, tall:true, fmt:fNum(2), label:"Factor betas",
+        items: bar.map(r => ({label:r.factor, value:r.beta, color: cvar[fstate.code], hollow: r.beta < 0}))});
+      fhost.appendChild(card("Contribution to return and risk", null, table(
+        ["Factor", "Beta", "t", "Factor premium p.a.", "Return contribution p.a.", "Share of variance"],
+        rows.map(r => [r.factor, r.beta === null ? "n/a" : num(r.beta), r.t_stat === null ? "n/a" : num(r.t_stat, 1),
+                       r.factor_ann_return === null ? "n/a" : sgn(r.factor_ann_return, 1),
+                       {t: r.return_contrib === null ? "n/a" : sgn(r.return_contrib, 2),
+                        cls: r.return_contrib >= 0 ? "pos" : "neg"},
+                       r.risk_share === null ? "n/a" : pct(r.risk_share, 0)]))));
+    };
+    const fctrl = el("div", {class:"controls"});
+    const mkseg = (opts, key) => {
+      const seg = el("div", {class:"seg"});
+      opts.forEach(([val, label]) => {
+        const b = el("button", {type:"button", text:label});
+        b.setAttribute("aria-pressed", String(fstate[key] === val));
+        b.onclick = () => { fstate[key] = val; [...seg.children].forEach(x => x.setAttribute("aria-pressed","false"));
+                            b.setAttribute("aria-pressed","true"); frender(); };
+        seg.appendChild(b);
+      });
+      return seg;
+    };
+    fctrl.appendChild(mkseg(ORDER.map(c => [c, NAMES[c]]), "code"));
+    fctrl.appendChild(mkseg([["active","Active vs benchmark"],["absolute","Excess over cash"]], "mode"));
+    root.appendChild(el("div", {class:"card"}, fctrl));
+    root.appendChild(fhost);
+    frender();
+  });
+
+  panel("stress", "Stress", root => {
+    const windows = [...new Set(D.stress_replay.map(r => r.window))];
+    const node = el("div", {class:"chart"});
+    const c1 = card("Historical replay: today's weights held through past episodes",
+      "ETFs that did not exist then are proxied (IEFA→EFA, IEMG→EEM, QUAL→IVV, VLUE→IWD, ACWI→IVV/EFA/EEM, EMB→LQD/HYG).", node);
+    c1.appendChild(legend(ORDER.map(c => [NAMES[c], C(c)])));
+    root.appendChild(c1);
+    const proxied = w => Math.max(0, ...D.stress_replay.filter(r => r.window === w)
+                                           .map(r => r.proxy_share || 0));
+    const wlabels = windows.map(w => proxied(w) > 0.01 ? w + "  (" + pct(proxied(w), 0) + " proxied)" : w);
+    new Charts.BarsH(node, {height: 50 + 46 * windows.length, mode:"group", fmt:fPct(0), categories:wlabels,
+      labelWidth:230, animate:"barsR", label:"Return in each historical episode",
+      series: ORDER.map(c => ({name:NAMES[c], color:cvar[c],
+        x: windows.map(w => { const r = D.stress_replay.find(x => x.window === w && x.code === c); return r ? r.replay_return : null; })}))});
+
+    c1.appendChild(note("The proxy share is the weight of the portfolio represented by a stand-in fund in that " +
+      "episode. The 2008 replay is " + pct(Math.max(...windows.map(proxied)), 0) + " proxied at its worst, so " +
+      "read it as an estimate of how these weights would have behaved rather than as something these " +
+      "portfolios lived through. Episodes with no label are held in the actual funds."));
+
+    const realised = D.stress_replay.filter(r => r.realised_return !== null && r.realised_return !== undefined);
+    if (realised.length) {
+      const ws = [...new Set(realised.map(r => r.window))];
+      root.appendChild(card("Realised during the backtest (the weights actually held at the time, net of costs)", null,
+        table(["Episode", ...ORDER.map(c => NAMES[c])], ws.map(w => [w, ...ORDER.map(c => {
+          const r = realised.find(x => x.window === w && x.code === c);
+          return r ? {t: pct(r.realised_return, 1), cls: r.realised_return >= 0 ? "pos" : "neg"} : "n/a";
+        })]))));
+    }
+
+    const scens = [...new Set(D.stress_scenarios.map(r => r.scenario))];
+    root.appendChild(card("Hypothetical shocks", "Bonds by duration, convexity and spread duration; equities by their betas to ACWI and the dollar; gold by assumption.",
+      table(["Scenario", ...ORDER.map(c => NAMES[c])], scens.map(s => [s, ...ORDER.map(c => {
+        const r = D.stress_scenarios.find(x => x.scenario === s && x.code === c);
+        return r ? {t: pct(r.return, 1), cls: r.return >= 0 ? "pos" : "neg"} : "n/a";
+      })]))));
+
+    // custom scenario
+    const sens = Object.fromEntries(D.sensitivities.map(r => [r.ticker, r]));
+    const weights = {};
+    ORDER.forEach(c => { weights[c] = D.current_weights.filter(r => r.code === c); });
+    const implied = {rates: Number(META.implied_eq_per_1pp_rates), usd: Number(META.implied_eq_per_usd)};
+    const fields = [
+      ["rates", "10y Treasury yield", -2, 2, 1, 0.25, "pp"],
+      ["breakeven", "Breakeven inflation", -1.5, 1.5, 0, 0.25, "pp"],
+      ["equity", "ACWI equity move", -50, 30, -15, 5, "%"],
+      ["usd", "US dollar", -15, 15, 0, 1, "%"],
+      ["ig", "IG credit spread", -1, 3, 0, 0.25, "pp"],
+      ["hy", "HY / EM spread", -2, 8, 0, 0.5, "pp"],
+      ["gold", "Gold", -30, 30, 0, 5, "%"],
+    ];
+    const vals = {};
+    const ctr = el("div", {class:"controls"});
+    const outStrip = el("div", {class:"strip"});
+    function shock() {
+      const E = vals.equity / 100, U = vals.usd / 100;
+      const dy = vals.rates / 100, dbe = vals.breakeven / 100, dreal = dy - dbe;
+      const dig = vals.ig / 100, dhy = vals.hy / 100;
+      const out = {};
+      Object.values(sens).forEach(s => {
+        if (s.kind === "equity") out[s.ticker] = s.beta_eq * E + s.beta_usd * U;
+        else if (s.kind === "gold") out[s.ticker] = vals.gold / 100;
+        else out[s.ticker] = -s.dur * dy + 0.5 * s.dur ** 2 * dy ** 2
+                             - s.real_dur * dreal + 0.5 * s.real_dur ** 2 * dreal ** 2
+                             - s.ig_sd * dig - s.hy_sd * dhy;
+      });
+      outStrip.textContent = "";
+      ORDER.forEach(c => {
+        const v = weights[c].reduce((a, r) => a + r.weight * (out[r.ticker] || 0), 0);
+        outStrip.appendChild(el("div", {}, [
+          el("div", {class:"name"}, [el("i", {class:"swatch", style:`background:${C(c)}`}), el("span", {text:NAMES[c]})]),
+          el("div", {class:"big " + (v >= 0 ? "delta pos" : "delta neg"), text: pct(v, 1)}),
+        ]));
+      });
+    }
+    fields.forEach(([key, label, min, max, def, step, unit]) => {
+      vals[key] = def;
+      const out = el("output", {text: (def > 0 ? "+" : "") + def + unit});
+      const input = el("input", {type:"range", id:"sc-" + key, min:String(min), max:String(max),
+                                 step:String(step), value:String(def)});
+      input.oninput = () => { vals[key] = Number(input.value);
+                              out.textContent = (vals[key] > 0 ? "+" : "") + vals[key] + unit; shock(); };
+      ctr.appendChild(el("label", {for:"sc-" + key}, [el("span", {text:label}), input, out]));
+    });
+    root.appendChild(card("Build your own shock", "Move the drivers and the portfolios reprice instantly, using the same sensitivities as the table above.",
+      [ctr, outStrip]));
+    shock();
+  });
+
+  panel("costs", "Costs", root => {
+    root.appendChild(card("Rebalancing rules tested on the Strategic 60/40",
+      "Same targets, same costs, different trading rule.", table(
+        ["Rule", "Return p.a.", "Volatility", "Sharpe", "Max DD", "Tracking error", "Turnover p.a.", "Trades", "Cost p.a."],
+        D.rebalance_study.map(r => [r.rule, pct(r.cagr,2), pct(r.vol,2), num(r.sharpe), pct(r.max_dd,1),
+                                    pct(r.tracking_error,2), pct(r.turnover_ann,1), String(r.n_rebalances),
+                                    r.cost_bps_ann.toFixed(2) + " bp"]))));
+    const node = el("div", {class:"chart"});
+    const c = card("Annual return as trading costs are scaled up", "1× is the base cost model (1-5bp one-way per ETF).", node);
+    c.appendChild(legend(["SAA","MINVAR","QV"].map(x => [NAMES[x], C(x)])));
+    root.appendChild(c);
+    new Charts.LineMarkers(node, {height:290, fmt:fPct(1), xlabel:"cost multiplier", animate:"line",
+      label:"Annual return versus cost multiplier",
+      series: ["SAA","MINVAR","QV"].map(code => {
+        const rows = D.cost_sensitivity.filter(r => r.code === code).sort((a,b) => a.cost_multiplier - b.cost_multiplier);
+        return {name:NAMES[code], color:cvar[code], x:rows.map(r => r.cost_multiplier), y:rows.map(r => r.cagr)};
+      })});
+
+    root.appendChild(note("<b>What size this is true at.</b> Costs here are a one-way charge in basis points " +
+      "per ETF, covering half the quoted spread plus a fixed impact allowance, applied to the weight actually " +
+      "traded. There is no market impact that grows with the size of the order. At a few million dollars that " +
+      "is about right. At a few billion it is not: the trade would move the book, the band rule would need a " +
+      "participation limit and a multi-day schedule, and the minimum variance portfolio's " +
+      pct(S.MINVAR.turnover_ann, 1) + " of annual turnover would be the first thing to break. Read the finding " +
+      "as costs did not matter at this size and this turnover, not as costs do not matter."));
+
+    const years = [...new Set(D.turnover_year.map(r => r.year))].sort();
+    root.appendChild(card("Turnover and cost by year", null, table(
+      ["Year", ...ORDER.flatMap(c => [NAMES[c] + " turnover", NAMES[c] + " cost"])],
+      years.map(y => [String(y), ...ORDER.flatMap(c => {
+        const r = D.turnover_year.find(x => x.year === y && x.code === c);
+        return r ? [pct(r.turnover, 1), r.cost_bps.toFixed(1) + " bp"] : ["n/a", "n/a"];
+      })]))));
+  });
+
+  panel("method", "Method", root => {
+    root.appendChild(card("The three minute version", null, note(
+      "I built three multi-asset portfolios out of fourteen US-listed iShares ETFs and ran them against a " +
+      "60/40 ACWI and AGG benchmark on daily data from " + META.backtest_start + " to " + META.backtest_end +
+      ". One is a plain strategic 60/40 with a fixed regional split and a TIPS sleeve, rebalanced quarterly " +
+      "inside a 2.5 point band. One is a long-only minimum variance portfolio re-optimised monthly on a shrunk " +
+      "covariance matrix. One is the strategic portfolio with its US equity sleeve split into quality and value " +
+      "factor funds, so the only difference between the two is the factor tilt. Weights drift with the market, " +
+      "trades happen a day after the signal, and every trade pays a spread. Then I took the difference between " +
+      "each portfolio and the benchmark apart three ways: Brinson-Fachler attribution into allocation, " +
+      "selection and cost, a ten-factor regression, and stress tests that either replay past episodes or apply " +
+      "a shock through duration and beta. I cared more about the decomposition than the backtest: I " +
+      "wanted to say which decision produced which basis point, and to prove the pieces add up, which the " +
+      "daily identity check does.")));
+    const p = el("div", {class:"prose"});
+    METHOD.forEach(([h, ...paras]) => {
+      if (h) p.appendChild(el("h3", {text:h}));
+      paras.forEach(t => p.appendChild(el("p", {text:t})));
+    });
+    root.appendChild(card(null, null, p));
+  });
+
+  const METHOD = __METHOD__;
+
+  // ---------------------------------------------------------------- wire up
+  const tabsHost = document.getElementById("tabs");
+  const panelHost = document.getElementById("panels");
+  PANELS.forEach((p, i) => {
+    const btn = el("button", {type:"button", role:"tab", id:"tab-" + p.id, text:p.label});
+    btn.setAttribute("aria-selected", String(i === 0));
+    btn.setAttribute("aria-controls", "panel-" + p.id);
+    tabsHost.appendChild(btn);
+    const sec = el("section", {class:"panel stack" + (i === 0 ? " active" : ""), id:"panel-" + p.id, role:"tabpanel"});
+    sec.setAttribute("aria-labelledby", "tab-" + p.id);
+    panelHost.appendChild(sec);
+    p.build(sec);
+    btn.onclick = () => {
+      PANELS.forEach(q => {
+        const on = q.id === p.id;
+        document.getElementById("tab-" + q.id).setAttribute("aria-selected", String(on));
+        document.getElementById("panel-" + q.id).classList.toggle("active", on);
+      });
+      const panel = document.getElementById("panel-" + p.id);
+      (Charts.REGISTRY || []).forEach(ch => { if (panel.contains(ch.host)) ch.draw(); });
+    };
+  });
+  if (META.data === "SYNTHETIC") {
+    panelHost.prepend(el("div", {class:"warn", text:"These figures come from SYNTHETIC test data, not market data."}));
+  }
+  panelHost.appendChild(el("footer", {}, [el("div", {text:
+    "Backtest of fixed rules on ETF price history, not live performance. Prices and macro series from Yahoo Finance and FRED; " +
+    "holdings, sectors, countries and durations from iShares holdings files. Built with Python, pandas and SQLite; charts drawn in plain SVG. " +
+    "Pipeline run " + META.run_at + "."}),
+    el("div", {class:"disclaimer", text:
+    "Built as a personal education project, to practise portfolio construction and risk attribution on real data. It is not investment advice and not a recommendation to buy or sell any security. Past performance says nothing about future returns."})]));
+})();
+</script>

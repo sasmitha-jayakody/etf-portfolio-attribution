@@ -1,0 +1,26 @@
+ticker,name,issuer,asset_class,segment,role,expense_ratio_pct,cost_bps,inception,backfill_proxy
+IVV,iShares Core S&P 500 ETF,iShares,Equity,US Equity,portfolio,0.03,1.0,2000-05-15,
+IEFA,iShares Core MSCI EAFE ETF,iShares,Equity,Dev ex-US Equity,portfolio,0.07,2.0,2012-10-18,EFA
+IEMG,iShares Core MSCI Emerging Markets ETF,iShares,Equity,EM Equity,portfolio,0.09,3.0,2012-10-18,EEM
+QUAL,iShares MSCI USA Quality Factor ETF,iShares,Equity,US Equity,portfolio,0.15,3.0,2013-07-16,IVV
+VLUE,iShares MSCI USA Value Factor ETF,iShares,Equity,US Equity,portfolio,0.15,5.0,2013-04-16,IWD
+AGG,iShares Core US Aggregate Bond ETF,iShares,Fixed Income,US Aggregate,portfolio,0.03,1.5,2003-09-22,
+TIP,iShares TIPS Bond ETF,iShares,Fixed Income,TIPS,portfolio,0.18,2.0,2003-12-04,
+IEF,iShares 7-10 Year Treasury Bond ETF,iShares,Fixed Income,Treasuries,portfolio,0.15,1.5,2002-07-22,
+TLT,iShares 20+ Year Treasury Bond ETF,iShares,Fixed Income,Treasuries,portfolio,0.15,1.5,2002-07-22,
+SHY,iShares 1-3 Year Treasury Bond ETF,iShares,Fixed Income,Treasuries,portfolio,0.15,1.0,2002-07-22,
+LQD,iShares iBoxx $ Investment Grade Corporate Bond ETF,iShares,Fixed Income,IG Credit,portfolio,0.14,2.0,2002-07-22,
+HYG,iShares iBoxx $ High Yield Corporate Bond ETF,iShares,Fixed Income,HY Credit,portfolio,0.49,3.0,2007-04-04,
+EMB,iShares J.P. Morgan USD Emerging Markets Bond ETF,iShares,Fixed Income,EM Debt,portfolio,0.39,4.0,2007-12-17,
+IAU,iShares Gold Trust,iShares,Real Assets,Gold,portfolio,0.25,2.0,2005-01-21,
+SHV,iShares 0-1 Year Treasury Bond ETF,iShares,Cash,Cash,cash,0.15,1.0,2007-01-05,
+ACWI,iShares MSCI ACWI ETF,iShares,Equity,Global Equity,benchmark,0.32,3.0,2008-03-26,
+EFA,iShares MSCI EAFE ETF,iShares,Equity,Dev ex-US Equity,proxy,0.35,1.5,2001-08-14,
+EEM,iShares MSCI Emerging Markets ETF,iShares,Equity,EM Equity,proxy,0.70,2.0,2003-04-07,
+USMV,iShares MSCI USA Min Vol Factor ETF,iShares,Equity,US Equity,factor,0.15,3.0,2011-10-18,
+MTUM,iShares MSCI USA Momentum Factor ETF,iShares,Equity,US Equity,factor,0.15,3.0,2013-04-16,
+IWM,iShares Russell 2000 ETF,iShares,Equity,US Equity,factor,0.19,1.0,2000-05-22,
+IWD,iShares Russell 1000 Value ETF,iShares,Equity,US Equity,factor,0.19,1.5,2000-05-22,
+IWF,iShares Russell 1000 Growth ETF,iShares,Equity,US Equity,factor,0.19,1.5,2000-05-22,
+GSG,iShares S&P GSCI Commodity-Indexed Trust,iShares,Real Assets,Commodities,factor,0.75,4.0,2006-07-10,
+UUP,Invesco DB US Dollar Index Bullish Fund,Invesco,FX,USD,factor,0.77,3.0,2007-02-20,
